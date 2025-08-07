@@ -1,0 +1,27 @@
+import librosa
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Step 1: Load raw audio signal a(t) at original sample rate 44,100 Hz
+file_path = 'sample_audio.wav'  # Replace with your audio file path
+raw_audio, sr_original = librosa.load(file_path, sr=44100)
+
+# Step 2: Preprocess audio: downsample to 22,050 Hz and denoise
+# Resample to 22,050 Hz
+resampled_audio = librosa.resample(raw_audio, orig_sr=sr_original, target_sr=22050)
+
+# Optional: Basic noise reduction using a median filter or spectral gating (here skipped for simplicity)
+
+# Step 3: Extract MFCC features from a′(t)
+mfccs = librosa.feature.mfcc(y=resampled_audio, sr=22050, n_mfcc=40)
+
+# Shape of the MFCC feature vector X
+print("MFCC shape (coefficients, frames):", mfccs.shape)  # Example: (40, T)
+
+# Optional: Visualize MFCCs
+plt.figure(figsize=(10, 4))
+librosa.display.specshow(mfccs, x_axis='time', sr=22050)
+plt.colorbar()
+plt.title('MFCC')
+plt.tight_layout()
+plt.show()
